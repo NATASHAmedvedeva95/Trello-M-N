@@ -9,13 +9,42 @@
   margin: auto;
   padding: 40px;
   margin: 0 auto;
-  
 }
 .block_wrapper {
   padding: 20px;
   border: 2px solid black;
   width: 850px;
   margin: 0 auto;
+}
+.block-head {
+  background-color: #177e17;
+  justify-content: space-between;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 45px 40px;
+  border: 2px solid #815d9fe0;
+  border-radius: 15px;
+  margin-bottom: 35px;
+  background: #c3acf15e;
+}
+
+.main-title {
+  text-align: center;
+  font-size: 20px;
+  font-weight: 500;
+  color: #5a11afbd;
+}
+
+.time-board {
+  width: 115px;
+  text-align: center;
+  background: #ffffffe6;
+  border: 2px solid #7d72a0a6;
+  border-radius: 10px;
+  padding: 15px 12px;
+  font-size: 17px;
+  font-weight: 700;
 }
 .block_item_todo {
   width: 280px;
@@ -103,7 +132,7 @@
   justify-content: space-between;
 }
 /* модальное окно */
-.modal_window{
+.modal_window {
   display: none;
 }
 .modal_window_form {
