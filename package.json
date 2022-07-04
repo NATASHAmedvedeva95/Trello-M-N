@@ -1,0 +1,23 @@
+{
+  "name": "trello-m-n",
+  "version": "1.0.0",
+  "description": "",
+  "source": "src/index.html",
+  "scripts": {
+    "start": "parcel",
+    "build": "parcel build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NATASHAmedvedeva95/Trello-M-N.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NATASHAmedvedeva95/Trello-M-N/issues"
+  },
+  "homepage": "https://github.com/NATASHAmedvedeva95/Trello-M-N#readme",
+  "devDependencies": {
+    "parcel": "^2.6.2"
+  }
+}
