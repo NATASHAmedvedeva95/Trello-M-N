@@ -1,58 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
-  <title>Document</title>
-</head>
-<body>
-  <div id="root" class="container">
-    <!-- внутри этого дива создавай хедер -->
-    <div class="block_wrapper">
-      <!-- место для часов и текста -->
-      <div class="block-head">
-        <div class="main-title">
-          <h1>Trello</h1>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="root" class="container">
+      <div class="block_wrapper">
+        <div class="block-head">
+          <div class="main-title">
+            <h1>Trello</h1>
+          </div>
+          <div class="time-board">
+            <p>12:32</p>
+          </div>
         </div>
-        <div class="time-board">
-          <p>12:32</p>
-        </div>
-      </div>
-<!-- ========================================== -->
-     
-      <ul class="block_item_todo">
+        <!-- ========================================== -->
         <div class="todo_text_number">
           <p class="block_item_todo_text">todo:</p>
           <p class="block_item_todo_number">2</p>
         </div>
-        <!-- первый массив -->
-        <template id="todo_template">
-        <li class="task_li" draggable="true">
-          <div class="li_btn">
-            <button class="btn_edit">Edit</button>
-            <button class="btn_delete">Delete</button>
-          </div>
-          <h2 class="title">Title</h2>
-          <form action="#" class="form">
-            <textarea placeholder="Description" class="task_li_textarea"></textarea>
-            <button class="form_btn">></button>
-          </form>
-          <div class="block_span">
-            <span class="task_li_span_user">User</span>
-            <span class="task_li_span_time">Time</span>
-          </div>
-        </li>
-      </template>
-      <button class="btn_add">Add todo</button>
-      </ul>
+        <ul class="block_item_todo">
+          <template id="template">
+            <li class="task_li" draggable="true">
+              <div class="li_btn">
+                <button class="btn_edit">Edit</button>
+                <button class="btn_delete">Delete</button>
+              </div>
+              <h2 class="title">Title</h2>
+              <form action="#" class="form">
+                <textarea
+                  placeholder="Description"
+                  class="task_li_textarea"
+                ></textarea>
+                <button class="form_btn">></button>
+              </form>
+              <div class="block_span">
+                <span class="task_li_span_user">User</span>
+                <span class="task_li_span_time">Time</span>
+              </div>
+            </li>
+          </template>
+        </ul>
+        <button class="btn_add">Add todo</button>
+      </div>
     </div>
 
-  </div>
-  <!-- ========================================= -->
-        <!-- модальное окно -->
-        <div class="modal_window">
+    <!-- модальное окно -->
+    <div class="modal_window">
           <form action="#" class="modal_window_form">
             <input type="text" placeholder="Title" class="form_input">
             <textarea class="form_textarea" placeholder="Description"></textarea>
@@ -70,8 +68,7 @@
             </div>
           </form>
         </div>
-        <!-- ======================================== -->
-
-  <script type="module" src="index.js"></script>
-</body>
+    <!-- ======================================== -->
+    <script type="module" src="index.js"></script>
+  </body>
 </html>
