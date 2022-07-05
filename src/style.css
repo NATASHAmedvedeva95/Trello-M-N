@@ -47,17 +47,18 @@
   font-weight: 700;
 }
 .block_item_todo {
-  width: 280px;
-  border: 2px solid rgb(153, 101, 101);
-  border-radius: 5px;
+  width: 275px;
   text-align: center;
-  display: flex;
-  padding: 0;
+  border: 2px solid #996565;
   flex-direction: column;
   justify-content: space-between;
+  padding: 40px;
+  padding-left: 0;
+  padding-right: 0;
+  display: flex;
 }
 .btn_add {
-  width: 100%;
+  width: 276px;
   height: 50px;
 }
 .todo_text_number {
@@ -69,7 +70,7 @@
   border: 2px solid #177e17;
   border-radius: 3px;
   text-transform: uppercase;
-  margin-bottom: 20px;
+  width: 276px;
 }
 
 .task_li {
@@ -81,7 +82,6 @@
   margin: 0 auto 20px;
   padding: 10px;
   list-style: none;
-  display: none;
 }
 
 .li_btn {
