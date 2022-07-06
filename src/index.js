@@ -1,65 +1,119 @@
+//// Data Block
 
-let taskArray = [
-  // {id:0, title: 'run', description:"0 white"},
-  // {id:1, title: 'run1', description:"1 white"},
-  // {id:2, title: 'run2', description:"2 white"},
-  // {id:3, title: 'run3', description:"3 white"}
-];
-console.log(taskArray);
+let tasksArrayJSON = localStorage.getItem("notes") || "[]";
+let tasksArray = JSON.parse(tasksArrayJSON);
 
-// const LiElements = taskArray.map((element)=>{return createLiElement(element)});
+//// End Data Block
 
+/////// Start create <li></li> elements from tasksArray
 
-function addUl(data = [], container) {
-  let tasks = data.map((task) => addUlItem(task));
-  container.innerHTML = '';
-  container.append(...tasks);
-  return container;
-}
-
-// function createUlList (LiElement) {
-//   const ul = document.querySelector('.block_item_todo');
-//   const ulButton = ul.lastElementChild;
-//   for (let li in LiElement){ul.insertBefore(LiElement[li],ulButton)}
-// }
-
-// createUlList(taskArray);
-
-
-function addUlItem ({id,title,description}) {
-  const template = document.getElementById('template');
-  const content = template.content.cloneNode(true);
-  const li = content.querySelector('li');
-
-  const titleElement = content.querySelector('.title');
-  titleElement.innerText = title;
-
-  const description1 = content.querySelector('.task_li_textarea');
-
-  description1.innerText = description;
-
-  li.id = id;
-  
-  return content;
-}
-
-const ulBtn = document.querySelector('.btn_add');
-ulBtn.addEventListener('click', () => {
-taskArray.push({id: crypto.randomUUID(), title:"gggg", description:"rrrr"});
-const ul = document.querySelector('.block_item_todo');
-// const li = document.querySelector('.task_li');
-addUl(taskArray,ul);
-console.log(ul);
+const liElements = tasksArray.map(element => {
+  return createLiElement(element);
 });
 
+/////// End create <li></li> elements from tasksArray
 
+////// FUNCTION create Ul elements with liElements in function parameters
 
+function createUlList(liElement) {
+  const ul = document.querySelector(".block_item_todo");
+  ul.append(...liElement);
+  return ul;
+}
+////// END FUNCTION
 
+//////// Create UL list with tasks
 
+const list = createUlList(liElements);
+console.log(list);
 
+//////// END Create UL list with tasks
 
+//////////// FUNCTION create LI elements
 
+function createLiElement({ id, title, description }) {
+  const template = document.getElementById("template");
+  const content = template.content.cloneNode(true);
+  const li = content.querySelector("li");
 
+  const titleElement = content.querySelector(".title");
+  titleElement.innerText = title;
+
+  const descripton = content.querySelector(".task_li_textarea");
+
+  descripton.innerText = description;
+
+  li.id = id;
+
+  return li;
+}
+
+////// END FUNCTION
+
+//////////// FUNCTION create NEW LI elements WITH NEW ARRAY DATA
+
+function addNewList(data) {
+  const liElements = data.map(element => {
+    return createLiElement(element);
+  });
+
+  //create Ul elements
+
+  createUlList(liElements);
+}
+
+////// END FUNCTION
+
+////// HUNDLERS ////////
+
+///// 1. Open modal window by click
+
+let modaleWindow = document.getElementById("modale");
+
+function openModaleWindow() {
+  modaleWindow.classList.toggle("modal_window");
+}
+
+////// evente listeners open modale window
+
+const addBtn = document.querySelector(".btn_add");
+addBtn.addEventListener("click", openModaleWindow);
+
+//////// 2. Add NEW LI ELEMENT
+
+function addNewLiElement() {
+  let textArea = document.querySelector(".form_textarea");
+  let textAreaValue = textArea.value;
+  let title = document.querySelector(".form_input");
+  let titleValue = title.value;
+
+  if (textAreaValue.length === 0 || titleValue.length === 0) {
+    alert("tap some note text");
+    return;
+  }
+  tasksArray.push({
+    id: crypto.randomUUID(),
+    title: titleValue,
+    description: textAreaValue
+  });
+  // tasksArray.push({ id: 0, title: titleValue, description: textAreaValue });
+  // tasksArray.map((element, index) => (element["id"] = index));
+  localStorage.setItem("notes", JSON.stringify(tasksArray));
+  // console.log(localStorage);
+
+  list.innerHTML = "";
+
+  addNewList(tasksArray);
+  textArea.value = "";
+  title.value = "";
+  modaleWindow.classList.toggle("modal_window");
+}
+
+////// evente listeners add new <li></li> element in <ul> list
+
+const confirmBtn = document.querySelector(".confirm-btn");
+
+confirmBtn.addEventListener("click", addNewLiElement);
 
 // Electro clock(shows the current time)
 function update() {
@@ -84,4 +138,3 @@ function clockStart() {
   update();
 }
 clockStart();
-
