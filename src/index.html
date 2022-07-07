@@ -68,7 +68,7 @@
       </li>
     </template>
     <!-- модальное окно -->
-    <div class="modal_window" id="modale">
+    <div id ="modale" class="modal_window">
           <form action="#" class="modal_window_form">
             <input type="text" placeholder="Title" class="form_input">
             <textarea class="form_textarea" placeholder="Description"></textarea>
@@ -87,6 +87,26 @@
           </form>
         </div>
     <!-- ======================================== -->
+    <template id="template">
+      <li class="task_li" draggable="true">
+        <div class="li_btn">
+          <button class="btn_edit">Edit</button>
+          <button class="btn_delete">Delete</button>
+        </div>
+        <h2 class="title">Title</h2>
+        <form action="#" class="form">
+          <textarea
+            placeholder="Description"
+            class="task_li_textarea"
+          ></textarea>
+          <button class="form_btn">></button>
+        </form>
+        <div class="block_span">
+          <span class="task_li_span_user">User</span>
+          <span class="task_li_span_time">Time</span>
+        </div>
+      </li>
+    </template>
     <script type="module" src="index.js"></script>
   </body>
 </html>
