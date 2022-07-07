@@ -1,36 +1,31 @@
-//// Data Block
-
+// Data Block
 let tasksArrayJSON = localStorage.getItem("notes") || "[]";
 let tasksArray = JSON.parse(tasksArrayJSON);
-
-//// End Data Block
-
-/////// Start create <li></li> elements from tasksArray
-
+// End Data Block
+// решить вопрос с добавлением элементов сразу, а не после обновления страницы
+// let number = document.querySelector('.block_item_todo_number');
+// number.append(numberLists);
+// console.log(tasksArray.length);
+/// Start create <li></li> elements from tasksArray
 const liElements = tasksArray.map(element => {
   return createLiElement(element);
 });
+/// End create <li></li> elements from tasksArray
 
-/////// End create <li></li> elements from tasksArray
-
-////// FUNCTION create Ul elements with liElements in function parameters
-
+// FUNCTION create Ul elements with liElements in function parameters
 function createUlList(liElement) {
   const ul = document.querySelector(".block_item_todo");
   ul.append(...liElement);
   return ul;
 }
-////// END FUNCTION
+// END FUNCTION
 
-//////// Create UL list with tasks
-
+// Create UL list with tasks
 const list = createUlList(liElements);
 console.log(list);
+// END Create UL list with tasks
 
-//////// END Create UL list with tasks
-
-//////////// FUNCTION create LI elements
-
+// FUNCTION create LI elements
 function createLiElement({ id, title, description }) {
   const template = document.getElementById("template");
   const content = template.content.cloneNode(true);
@@ -47,11 +42,9 @@ function createLiElement({ id, title, description }) {
 
   return li;
 }
+// END FUNCTION
 
-////// END FUNCTION
-
-//////////// FUNCTION create NEW LI elements WITH NEW ARRAY DATA
-
+// FUNCTION create NEW LI elements WITH NEW ARRAY DATA
 function addNewList(data) {
   const liElements = data.map(element => {
     return createLiElement(element);
@@ -64,38 +57,50 @@ function addNewList(data) {
 
 ////// END FUNCTION
 
-////// HUNDLERS ////////
+// HUNDLERS
 
-///// 1. Open modal window by click
+/// 1. Open/closed modal window by click
 
 let modaleWindow = document.getElementById("modale");
+let container = document.querySelector('.container');
+let wrapperModal = document.querySelector('.block_wrapper');
 
-function openModaleWindow() {
+function stateModalWindow() {
+  container.classList.toggle('container_modal');
+  wrapperModal.classList.toggle('block_wrapper_modal');
   modaleWindow.classList.toggle("modal_window");
+  // window.onbeforeunload = function() {
+  //   return "Данные не сохранятся";
+  // };
 }
-
-////// evente listeners open modale window
+// evente listeners open modale window
 
 const addBtn = document.querySelector(".btn_add");
-addBtn.addEventListener("click", openModaleWindow);
+addBtn.addEventListener("click", stateModalWindow);
 
-//////// 2. Add NEW LI ELEMENT
+// 2. Add NEW LI ELEMENT
 
 function addNewLiElement() {
   let textArea = document.querySelector(".form_textarea");
   let textAreaValue = textArea.value;
   let title = document.querySelector(".form_input");
   let titleValue = title.value;
+  let lists = document.querySelector('.block_item_todo');
+  let numberLists = lists.childNodes.length+1;
 
   if (textAreaValue.length === 0 || titleValue.length === 0) {
     alert("tap some note text");
     return;
   }
+
   tasksArray.push({
     id: crypto.randomUUID(),
     title: titleValue,
-    description: textAreaValue
+    description: textAreaValue,
+    number: numberLists
   });
+  let number = document.querySelector('.block_item_todo_number');
+  number.append(numberLists);
   // tasksArray.push({ id: 0, title: titleValue, description: textAreaValue });
   // tasksArray.map((element, index) => (element["id"] = index));
   localStorage.setItem("notes", JSON.stringify(tasksArray));
@@ -104,17 +109,25 @@ function addNewLiElement() {
   list.innerHTML = "";
 
   addNewList(tasksArray);
+  stateModalWindow();
   textArea.value = "";
   title.value = "";
-  modaleWindow.classList.toggle("modal_window");
+  // localStorage.setItem("notes", JSON.stringify(tasksArray));
 }
 
-////// evente listeners add new <li></li> element in <ul> list
-
+// evente listeners add new <li></li> element in <ul> list
+// обработчики на добавление в ul и закрытие модального окна
 const confirmBtn = document.querySelector(".confirm-btn");
+const btnCancel = document.querySelector('.cancel-btn');
 
 confirmBtn.addEventListener("click", addNewLiElement);
-
+btnCancel.addEventListener("click", stateModalWindow);
+// выход из области модального окна, если нажата кнопка esc
+window.addEventListener("keydown", function(e){
+        if (e.keyCode == 27) {
+          stateModalWindow();
+        }
+    }, true);
 // Electro clock(shows the current time)
 function update() {
   let watch = document.querySelector(".time-board p");
