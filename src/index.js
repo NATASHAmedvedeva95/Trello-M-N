@@ -1,18 +1,17 @@
 // Data Block
 let tasksArrayJSON = localStorage.getItem("notes") || "[]";
 let tasksArray = JSON.parse(tasksArrayJSON);
+
 // End Data Block
-// решить вопрос с добавлением элементов сразу, а не после обновления страницы
-// let number = document.querySelector('.block_item_todo_number');
-// number.append(numberLists);
-// console.log(tasksArray.length);
+
 /// Start create <li></li> elements from tasksArray
-const liElements = tasksArray.map(element => {
+const liElements = tasksArray.map((element) => {
   return createLiElement(element);
 });
 /// End create <li></li> elements from tasksArray
 
 // FUNCTION create Ul elements with liElements in function parameters
+// удаление элементов по одному
 function createUlList(liElement) {
   const ul = document.querySelector(".block_item_todo");
   ul.append(...liElement);
@@ -22,7 +21,7 @@ function createUlList(liElement) {
 
 // Create UL list with tasks
 const list = createUlList(liElements);
-console.log(list);
+// console.log(list);
 // END Create UL list with tasks
 
 // FUNCTION create LI elements
@@ -39,20 +38,20 @@ function createLiElement({ id, title, description }) {
   descripton.innerText = description;
 
   li.id = id;
-
   return li;
 }
 // END FUNCTION
 
 // FUNCTION create NEW LI elements WITH NEW ARRAY DATA
 function addNewList(data) {
-  const liElements = data.map(element => {
+  const liElements = data.map((element) => {
     return createLiElement(element);
   });
 
   //create Ul elements
 
   createUlList(liElements);
+  console.log(liElements);
 }
 
 ////// END FUNCTION
@@ -62,16 +61,17 @@ function addNewList(data) {
 /// 1. Open/closed modal window by click
 
 let modaleWindow = document.getElementById("modale");
-let container = document.querySelector('.container');
-let wrapperModal = document.querySelector('.block_wrapper');
+let container = document.querySelector(".container");
+let wrapperModal = document.querySelector(".block_wrapper");
 
 function stateModalWindow() {
-  container.classList.toggle('container_modal');
-  wrapperModal.classList.toggle('block_wrapper_modal');
+  let textArea = document.querySelector(".form_textarea");
+  let title = document.querySelector(".form_input");
+  container.classList.toggle("container_modal");
+  wrapperModal.classList.toggle("block_wrapper_modal");
   modaleWindow.classList.toggle("modal_window");
-  // window.onbeforeunload = function() {
-  //   return "Данные не сохранятся";
-  // };
+  textArea.value = "";
+  title.value = "";
 }
 // evente listeners open modale window
 
@@ -85,49 +85,56 @@ function addNewLiElement() {
   let textAreaValue = textArea.value;
   let title = document.querySelector(".form_input");
   let titleValue = title.value;
-  let lists = document.querySelector('.block_item_todo');
-  let numberLists = lists.childNodes.length+1;
-
   if (textAreaValue.length === 0 || titleValue.length === 0) {
     alert("tap some note text");
     return;
   }
-
   tasksArray.push({
     id: crypto.randomUUID(),
     title: titleValue,
     description: textAreaValue,
-    number: numberLists
   });
-  let number = document.querySelector('.block_item_todo_number');
-  number.append(numberLists);
   // tasksArray.push({ id: 0, title: titleValue, description: textAreaValue });
   // tasksArray.map((element, index) => (element["id"] = index));
   localStorage.setItem("notes", JSON.stringify(tasksArray));
-  // console.log(localStorage);
-
   list.innerHTML = "";
 
   addNewList(tasksArray);
-  stateModalWindow();
   textArea.value = "";
   title.value = "";
-  // localStorage.setItem("notes", JSON.stringify(tasksArray));
+  stateModalWindow();
 }
 
 // evente listeners add new <li></li> element in <ul> list
 // обработчики на добавление в ul и закрытие модального окна
 const confirmBtn = document.querySelector(".confirm-btn");
-const btnCancel = document.querySelector('.cancel-btn');
+const btnCancel = document.querySelector(".cancel-btn");
+const ul = document.querySelector('.block_item_todo');
+ul.onclick = function (event) {
+  let td = event.target.closest(".btn_delete");
+  ul.childNodes.forEach((node) => {
+    if (node.contains(td)) {
+      node.remove();
+      tasksArray.splice(createLiElement,1);
+      addNewList(list,tasksArray);
+    }
+  });
+};
+
 
 confirmBtn.addEventListener("click", addNewLiElement);
 btnCancel.addEventListener("click", stateModalWindow);
+
 // выход из области модального окна, если нажата кнопка esc
-window.addEventListener("keydown", function(e){
-        if (e.keyCode == 27) {
-          stateModalWindow();
-        }
-    }, true);
+window.addEventListener(
+  "keydown",
+  function (e) {
+    if (e.keyCode == 27) {
+      stateModalWindow();
+    }
+  },
+  true
+);
 // Electro clock(shows the current time)
 function update() {
   let watch = document.querySelector(".time-board p");
