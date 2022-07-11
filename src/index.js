@@ -116,18 +116,8 @@ ul.onclick = function (event) {
   let td = event.target.closest(".btn_delete");
   ul.childNodes.forEach((node) => {
     if (node.contains(td)) {
-      let n = 0;
-      let k = 0;
       node.remove();
-      for(const iterator of tasksArray) {
-        for (let key in iterator) {
-          if(iterator[key] === td){
-            {k = n;}
-          }
-          n++;
-        }
-      }
-      tasksArray.splice(k,1);
+      tasksArray.splice(ul.childNodes.node,1);
     }
     localStorage.setItem("notes", JSON.stringify(tasksArray));
   });
