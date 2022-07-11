@@ -47,7 +47,7 @@ function addNewList(data) {
   list.innerHTML = "";
 
   const liElements = data.map((element,index) => {
-    console.log(element);
+
     element["id"] = index;
     return createLiElement(element);
   });
@@ -55,7 +55,7 @@ function addNewList(data) {
   //create Ul elements
 
   createUlList(liElements);
-  console.log(liElements);
+
 }
 
 ////// END FUNCTION
@@ -102,8 +102,7 @@ function addNewLiElement() {
   tasksArray.map((element, index) => {
 
     element["id"] = index;
-    console.log(element["id"]);
-    console.log(tasksArray);
+ 
   });
 
   // tasksArray.push({ id: 0, title: titleValue, description: textAreaValue });
@@ -127,16 +126,12 @@ const li = document.querySelector(".li");
 ul.onclick = function(event) {
   const target = event.target;
   const currentIndex = target.offsetParent.id;
-  console.log(event);
-  console.log(target);
-  console.log(currentIndex);
+
   if (target.className === "btn_delete") {
     tasksArray.splice(currentIndex, 1);
     addNewList(tasksArray);
   }
 
- 
-  console.log(tasksArray);
 
   localStorage.setItem("notes", JSON.stringify(tasksArray));
 };
@@ -147,8 +142,8 @@ btnCancel.addEventListener("click", stateModalWindow);
 // выход из области модального окна, если нажата кнопка esc
 window.addEventListener(
   "keydown",
-  function(e) {
-    if (e.keyCode == 27) {
+  function(event) {
+    if (event.keyCode == 27) {
       stateModalWindow();
     }
   },
