@@ -123,6 +123,15 @@ const btnCancel = document.querySelector(".cancel-btn");
 const ul = document.querySelector(".block_item_todo");
 const li = document.querySelector(".li");
 
+// ul.onclick = function (event) {
+//   let td = event.target.closest(".btn_delete");
+//   ul.childNodes.forEach((node) => {
+//     if (node.contains(td)) {
+//       node.remove();
+//       tasksArray.splice(ul.childNodes.node,1);
+//     }
+//     localStorage.setItem("notes", JSON.stringify(tasksArray));
+//   });
 ul.onclick = function(event) {
   const target = event.target;
   const currentIndex = target.offsetParent.id;
@@ -145,6 +154,16 @@ window.addEventListener(
   function(event) {
     if (event.keyCode == 27) {
       stateModalWindow();
+    }
+  },
+  true
+);
+// выход из области модального окна, если нажата кнопка enter
+window.addEventListener(
+  "keydown",
+  function(e) {
+    if (e.keyCode == 13) {
+      addNewLiElement();
     }
   },
   true
