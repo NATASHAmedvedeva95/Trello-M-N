@@ -111,6 +111,7 @@ const confirmBtn = document.querySelector(".confirm-btn");
 const btnCancel = document.querySelector(".cancel-btn");
 const ul = document.querySelector('.block_item_todo');
 const li = document.querySelector('.li');
+
 ul.onclick = function (event) {
   let td = event.target.closest(".btn_delete");
   ul.childNodes.forEach((node) => {
