@@ -93,6 +93,7 @@
 .task_li {
   width: 242px;
   height: 159px;
+  position: relative;
   background-color: #a2a2af;
   border: 1px solid;
   border-radius: 19px;
