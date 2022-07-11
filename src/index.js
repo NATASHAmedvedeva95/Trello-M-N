@@ -110,14 +110,25 @@ function addNewLiElement() {
 const confirmBtn = document.querySelector(".confirm-btn");
 const btnCancel = document.querySelector(".cancel-btn");
 const ul = document.querySelector('.block_item_todo');
+const li = document.querySelector('.li');
 ul.onclick = function (event) {
   let td = event.target.closest(".btn_delete");
   ul.childNodes.forEach((node) => {
     if (node.contains(td)) {
+      let n = 0;
+      let k = 0;
       node.remove();
-      tasksArray.splice(createLiElement,1);
-      addNewList(list,tasksArray);
+      for(const iterator of tasksArray) {
+        for (let key in iterator) {
+          if(iterator[key] === td){
+            {k = n;}
+          }
+          n++;
+        }
+      }
+      tasksArray.splice(k,1);
     }
+    localStorage.setItem("notes", JSON.stringify(tasksArray));
   });
 };
 
