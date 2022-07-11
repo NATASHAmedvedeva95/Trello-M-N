@@ -5,7 +5,7 @@ let tasksArray = JSON.parse(tasksArrayJSON);
 // End Data Block
 
 /// Start create <li></li> elements from tasksArray
-const liElements = tasksArray.map((element) => {
+const liElements = tasksArray.map(element => {
   return createLiElement(element);
 });
 /// End create <li></li> elements from tasksArray
@@ -44,7 +44,11 @@ function createLiElement({ id, title, description }) {
 
 // FUNCTION create NEW LI elements WITH NEW ARRAY DATA
 function addNewList(data) {
-  const liElements = data.map((element) => {
+  list.innerHTML = "";
+
+  const liElements = data.map((element,index) => {
+    console.log(element);
+    element["id"] = index;
     return createLiElement(element);
   });
 
@@ -90,14 +94,22 @@ function addNewLiElement() {
     return;
   }
   tasksArray.push({
-    id: crypto.randomUUID(),
+    // id: crypto.randomUUID(),
+    id: 0,
     title: titleValue,
-    description: textAreaValue,
+    description: textAreaValue
   });
+  tasksArray.map((element, index) => {
+
+    element["id"] = index;
+    console.log(element["id"]);
+    console.log(tasksArray);
+  });
+
   // tasksArray.push({ id: 0, title: titleValue, description: textAreaValue });
   // tasksArray.map((element, index) => (element["id"] = index));
   localStorage.setItem("notes", JSON.stringify(tasksArray));
-  list.innerHTML = "";
+  // list.innerHTML = "";
 
   addNewList(tasksArray);
   textArea.value = "";
@@ -109,20 +121,34 @@ function addNewLiElement() {
 // обработчики на добавление в ul и закрытие модального окна
 const confirmBtn = document.querySelector(".confirm-btn");
 const btnCancel = document.querySelector(".cancel-btn");
-const ul = document.querySelector('.block_item_todo');
-const li = document.querySelector('.li');
+const ul = document.querySelector(".block_item_todo");
+const li = document.querySelector(".li");
 
-ul.onclick = function (event) {
-  let td = event.target.closest(".btn_delete");
-  ul.childNodes.forEach((node) => {
-    if (node.contains(td)) {
-      node.remove();
-      tasksArray.splice(ul.childNodes.node,1);
-    }
-    localStorage.setItem("notes", JSON.stringify(tasksArray));
-  });
+// ul.onclick = function (event) {
+//   let td = event.target.closest(".btn_delete");
+//   ul.childNodes.forEach((node) => {
+//     if (node.contains(td)) {
+//       node.remove();
+//       tasksArray.splice(ul.childNodes.node,1);
+//     }
+//     localStorage.setItem("notes", JSON.stringify(tasksArray));
+//   });
+ul.onclick = function(event) {
+  const target = event.target;
+  const currentIndex = target.offsetParent.id;
+  console.log(event);
+  console.log(target);
+  console.log(currentIndex);
+  if (target.className === "btn_delete") {
+    tasksArray.splice(currentIndex, 1);
+    addNewList(tasksArray);
+  }
+
+ 
+  console.log(tasksArray);
+
+  localStorage.setItem("notes", JSON.stringify(tasksArray));
 };
-
 
 confirmBtn.addEventListener("click", addNewLiElement);
 btnCancel.addEventListener("click", stateModalWindow);
@@ -130,9 +156,19 @@ btnCancel.addEventListener("click", stateModalWindow);
 // выход из области модального окна, если нажата кнопка esc
 window.addEventListener(
   "keydown",
-  function (e) {
+  function(e) {
     if (e.keyCode == 27) {
       stateModalWindow();
+    }
+  },
+  true
+);
+// выход из области модального окна, если нажата кнопка enter
+window.addEventListener(
+  "keydown",
+  function(e) {
+    if (e.keyCode == 13) {
+      addNewLiElement();
     }
   },
   true
