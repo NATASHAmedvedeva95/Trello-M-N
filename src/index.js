@@ -25,7 +25,7 @@ const list = createUlList(liElements);
 // END Create UL list with tasks
 
 // FUNCTION create LI elements
-function createLiElement({ id, title, description }) {
+function createLiElement({ id, title, description, index}) {
   const template = document.getElementById("template");
   const content = template.content.cloneNode(true);
   const li = content.querySelector("li");
@@ -37,7 +37,7 @@ function createLiElement({ id, title, description }) {
 
   descripton.innerText = description;
 
-  li.id = id;
+  li.id  = index;
   return li;
 }
 // END FUNCTION
@@ -48,7 +48,7 @@ function addNewList(data) {
 
   const liElements = data.map((element,index) => {
 
-    element["id"] = index;
+    element["index"] = index;
     return createLiElement(element);
   });
 
@@ -101,7 +101,7 @@ function addNewLiElement() {
   });
   tasksArray.map((element, index) => {
 
-    element["id"] = index;
+    element["index"] = index;
  
   });
 
@@ -120,8 +120,7 @@ function addNewLiElement() {
 // обработчики на добавление в ul и закрытие модального окна
 const confirmBtn = document.querySelector(".confirm-btn");
 const btnCancel = document.querySelector(".cancel-btn");
-const ul = document.querySelector(".block_item_todo");
-const li = document.querySelector(".li");
+
 // ЭТОТ ВАРИАНТ РАБОТАЕТ ТАКЖЕ, ТОЛЬКО ПРОБЛЕМА С ОТРИСОВКОЙ МАССИВА
 // ul.onclick = function (event) {
 //   let td = event.target.closest(".btn_delete");
@@ -141,13 +140,11 @@ function addClickUl () {
     tasksArray.splice(currentIndex, 1);
     addNewList(tasksArray);
   }
-  if ( target.className === "btn_edit"){
+  if (target.className === "btn_edit"){
     stateModalWindow();
   }
   localStorage.setItem("notes", JSON.stringify(tasksArray));
 }
-
-
 
 
 confirmBtn.addEventListener("click", addNewLiElement);
