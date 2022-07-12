@@ -17,13 +17,11 @@
   background: #000000d9;
 }
 .block_wrapper {
-  width: 960px;
-  z-index: -100;
-  border: 1px solid rgb(0, 0, 0);
-  border-radius: 17px;
-  margin: 0px auto;
   padding: 20px;
-  background-color: #eddce6;
+  border: 2px solid black;
+  width: 960px;
+  margin: 0 auto;
+  z-index: -100;
 }
 .block_wrapper_modal{
   padding: 20px;
@@ -65,13 +63,10 @@
   font-size: 17px;
   font-weight: 700;
 }
-.block_list_todo, .block_list_inprogress, .block_list_done{
-  border: 1px solid black;
-  border-radius: 12px;
-}
 .block_item_todo {
   width: 275px;
   text-align: center;
+  border: 2px solid #996565;
   flex-direction: column;
   justify-content: space-between;
   padding: 10px 0 10px 0;
@@ -82,22 +77,17 @@
 .btn_add {
   width: 276px;
   height: 50px;
-  width: 276px;
-  height: 50px;
-  border-radius: 0 0 10px 11px;
-  border: none;
-  background-color: #acdfe7;
 }
 .todo_text_number {
-  text-transform: uppercase;
-  width: 276px;
+  line-height: 35px;
   background-color: #82c727;
-  border: none;
-  border-radius: 12px 12px 0 0;
   justify-content: space-between;
   padding: 9px;
-  line-height: 35px;
   display: flex;
+  border: 2px solid #177e17;
+  border-radius: 8px;
+  text-transform: uppercase;
+  width: 276px;
 }
 
 .task_li {
