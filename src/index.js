@@ -122,7 +122,7 @@ const confirmBtn = document.querySelector(".confirm-btn");
 const btnCancel = document.querySelector(".cancel-btn");
 const ul = document.querySelector(".block_item_todo");
 const li = document.querySelector(".li");
-
+// ЭТОТ ВАРИАНТ РАБОТАЕТ ТАКЖЕ, ТОЛЬКО ПРОБЛЕМА С ОТРИСОВКОЙ МАССИВА
 // ul.onclick = function (event) {
 //   let td = event.target.closest(".btn_delete");
 //   ul.childNodes.forEach((node) => {
@@ -132,7 +132,7 @@ const li = document.querySelector(".li");
 //     }
 //     localStorage.setItem("notes", JSON.stringify(tasksArray));
 //   });
-ul.onclick = function(event) {
+ul.addEventListener('click', (event) => {
   const target = event.target;
   const currentIndex = target.offsetParent.id;
 
@@ -144,7 +144,9 @@ ul.onclick = function(event) {
     stateModalWindow();
   }
   localStorage.setItem("notes", JSON.stringify(tasksArray));
-};
+}) ;
+
+
 
 confirmBtn.addEventListener("click", addNewLiElement);
 btnCancel.addEventListener("click", stateModalWindow);
