@@ -132,7 +132,8 @@ const li = document.querySelector(".li");
 //     }
 //     localStorage.setItem("notes", JSON.stringify(tasksArray));
 //   });
-ul.addEventListener('click', (event) => {
+
+function addClickUl () {
   const target = event.target;
   const currentIndex = target.offsetParent.id;
 
@@ -144,12 +145,14 @@ ul.addEventListener('click', (event) => {
     stateModalWindow();
   }
   localStorage.setItem("notes", JSON.stringify(tasksArray));
-}) ;
+}
+
 
 
 
 confirmBtn.addEventListener("click", addNewLiElement);
 btnCancel.addEventListener("click", stateModalWindow);
+list.addEventListener('click', addClickUl);
 
 // выход из области модального окна, если нажата кнопка esc
 window.addEventListener(
