@@ -140,8 +140,9 @@ ul.onclick = function(event) {
     tasksArray.splice(currentIndex, 1);
     addNewList(tasksArray);
   }
-
-
+  if ( target.className === "btn_edit"){
+    stateModalWindow();
+  }
   localStorage.setItem("notes", JSON.stringify(tasksArray));
 };
 
