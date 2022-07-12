@@ -34,7 +34,7 @@ const list = createUlList(liElements);
 // END Create UL list with tasks
 
 // FUNCTION create LI elements
-function createLiElement({ id, title, description }) {
+function createLiElement({ id, title, description, index}) {
   const template = document.getElementById("template");
   const content = template.content.cloneNode(true);
   const li = content.querySelector("li");
@@ -47,7 +47,6 @@ function createLiElement({ id, title, description }) {
   descripton.innerText = description;
 
   li.id = id;
-
   return li;
 }
 // END FUNCTION
@@ -117,6 +116,7 @@ function addNewLiElement() {
     description: textAreaValue
   });
   tasksArray.map((element, index) => {
+
     element["id"] = index;
   });
 
@@ -138,9 +138,8 @@ function addNewLiElement() {
 // обработчики на добавление в ul и закрытие модального окна
 const confirmBtn = document.querySelector(".confirm-btn");
 const btnCancel = document.querySelector(".cancel-btn");
-const ul = document.querySelector(".block_item_todo");
-const li = document.querySelector(".li");
 
+// ЭТОТ ВАРИАНТ РАБОТАЕТ ТАКЖЕ, ТОЛЬКО ПРОБЛЕМА С ОТРИСОВКОЙ МАССИВА
 // ul.onclick = function (event) {
 //   let td = event.target.closest(".btn_delete");
 //   ul.childNodes.forEach((node) => {
@@ -163,6 +162,12 @@ ul.onclick = function(event) {
   localStorage.setItem("notes", JSON.stringify(tasksArray));
   localStorage.setItem("currentTaskNumber", tasksArray.length);
 };
+
+  if (target.className === "btn_edit"){
+    stateModalWindow();
+  }
+  localStorage.setItem("notes", JSON.stringify(tasksArray));
+}
 
 confirmBtn.addEventListener("click", addNewLiElement);
 btnCancel.addEventListener("click", stateModalWindow);
