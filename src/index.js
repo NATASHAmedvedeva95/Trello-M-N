@@ -7,6 +7,7 @@ let tasksArray = JSON.parse(tasksArrayJSON);
 /// Start create <li></li> elements from tasksArray
 const liElements = tasksArray.map(element => {
   return createLiElement(element);
+  
 });
 /// End create <li></li> elements from tasksArray
 
