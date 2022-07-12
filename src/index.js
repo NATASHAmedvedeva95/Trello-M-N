@@ -1,13 +1,19 @@
 // Data Block
 let tasksArrayJSON = localStorage.getItem("notes") || "[]";
 let tasksArray = JSON.parse(tasksArrayJSON);
+let currentTaskNumberJSON = localStorage.getItem("currentTaskNumber") || "";
+let currentTaskNumber = currentTaskNumberJSON;
 
 // End Data Block
+
+////number of li elements
+let p = document.querySelector(".todo");
+p.innerText = currentTaskNumber;
+////////end
 
 /// Start create <li></li> elements from tasksArray
 const liElements = tasksArray.map(element => {
   return createLiElement(element);
-  
 });
 /// End create <li></li> elements from tasksArray
 
@@ -26,7 +32,7 @@ const list = createUlList(liElements);
 // END Create UL list with tasks
 
 // FUNCTION create LI elements
-function createLiElement({ id, title, description, index}) {
+function createLiElement({ id, title, description, index }) {
   const template = document.getElementById("template");
   const content = template.content.cloneNode(true);
   const li = content.querySelector("li");
@@ -38,7 +44,7 @@ function createLiElement({ id, title, description, index}) {
 
   descripton.innerText = description;
 
-  li.id  = index;
+  li.id = index;
   return li;
 }
 // END FUNCTION
@@ -47,8 +53,7 @@ function createLiElement({ id, title, description, index}) {
 function addNewList(data) {
   list.innerHTML = "";
 
-  const liElements = data.map((element,index) => {
-
+  const liElements = data.map((element, index) => {
     element["index"] = index;
     return createLiElement(element);
   });
@@ -56,7 +61,15 @@ function addNewList(data) {
   //create Ul elements
 
   createUlList(liElements);
+}
 
+////// END FUNCTION
+
+// FUNCTION change current numbers of task in ul list
+function changeCurrentNumbers() {
+  let p = document.querySelector(".todo");
+
+  p.innerText = tasksArray.length;
 }
 
 ////// END FUNCTION
@@ -101,17 +114,19 @@ function addNewLiElement() {
     description: textAreaValue
   });
   tasksArray.map((element, index) => {
-
     element["index"] = index;
- 
   });
 
   // tasksArray.push({ id: 0, title: titleValue, description: textAreaValue });
   // tasksArray.map((element, index) => (element["id"] = index));
   localStorage.setItem("notes", JSON.stringify(tasksArray));
+  localStorage.setItem("currentTaskNumber", tasksArray.length);
+
   // list.innerHTML = "";
 
   addNewList(tasksArray);
+  changeCurrentNumbers();
+
   textArea.value = "";
   title.value = "";
   stateModalWindow();
@@ -133,24 +148,25 @@ const btnCancel = document.querySelector(".cancel-btn");
 //     localStorage.setItem("notes", JSON.stringify(tasksArray));
 //   });
 
-function addClickUl () {
+function addClickUl() {
   const target = event.target;
   const currentIndex = target.offsetParent.id;
 
   if (target.className === "btn_delete") {
     tasksArray.splice(currentIndex, 1);
     addNewList(tasksArray);
+    changeCurrentNumbers();
   }
-  if (target.className === "btn_edit"){
+  if (target.className === "btn_edit") {
     stateModalWindow();
   }
   localStorage.setItem("notes", JSON.stringify(tasksArray));
+  localStorage.setItem("currentTaskNumber", tasksArray.length);
 }
-
 
 confirmBtn.addEventListener("click", addNewLiElement);
 btnCancel.addEventListener("click", stateModalWindow);
-list.addEventListener('click', addClickUl);
+list.addEventListener("click", addClickUl);
 
 // выход из области модального окна, если нажата кнопка esc
 window.addEventListener(
