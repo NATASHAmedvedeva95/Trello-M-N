@@ -81,61 +81,99 @@ function changeCurrentNumbers() {
 let modaleWindow = document.getElementById("modale");
 let container = document.querySelector(".container");
 let wrapperModal = document.querySelector(".block_wrapper");
+let textAreaElement = document.querySelector(".form_textarea");
+let titleElement = document.querySelector(".form_input");
+const confirmBtn = document.querySelector(".confirm-btn");
+const btnCancel = document.querySelector(".cancel-btn");
+btnCancel.addEventListener("click", () => modalWindo.close());
 
-function stateModalWindow() {
-  let textArea = document.querySelector(".form_textarea");
-  let title = document.querySelector(".form_input");
-  container.classList.toggle("container_modal");
-  wrapperModal.classList.toggle("block_wrapper_modal");
-  modaleWindow.classList.toggle("modal_window");
-  textArea.value = "";
-  title.value = "";
-}
-// evente listeners open modale window
+const modalWindo = {
+  show(data = {}, cb = () => {}) {
+    const { title, description } = data;
+
+    container.classList.add("container_modal");
+    wrapperModal.classList.add("block_wrapper_modal");
+    modaleWindow.classList.remove("modal_window");
+
+    textAreaElement.value = "";
+    titleElement.value = "";
+
+    confirmBtn.addEventListener("click", () => {
+      const title = titleElement.value;
+      const description = textAreaElement.value;
+
+      this.close();
+
+      cb({ title, description });
+    }),
+      { once: true };
+  },
+  confirm() {
+    let title = titleElement.value;
+    let description = textAreaElement.value;
+    if (description.length === 0 || title.length === 0) {
+      alert("tap some note text");
+      return;
+    }
+    tasksArray.push({
+      // id: crypto.randomUUID(),
+      id: 0,
+      title: title,
+      description: description
+    });
+    tasksArray.map((element, index) => {
+      element["index"] = index;
+    });
+    console.log(tasksArray);
+
+    localStorage.setItem("notes", JSON.stringify(tasksArray));
+    localStorage.setItem("currentTaskNumber", tasksArray.length);
+
+    addNewList(tasksArray);
+    changeCurrentNumbers();
+    // titleElement.value = "";
+    // textAreaElement.value = "";
+    console.log(titleElement);
+
+    this.close();
+  },
+
+  close() {
+    container.classList.remove("container_modal");
+    wrapperModal.classList.remove("block_wrapper_modal");
+    modaleWindow.classList.add("modal_window");
+  }
+};
+
+// function stateModalWindow() {
+//   let textArea = document.querySelector(".form_textarea");
+//   let title = document.querySelector(".form_textarea");
+//   container.classList.toggle("container_modal");
+//   wrapperModal.classList.toggle("block_wrapper_modal");
+//   modaleWindow.classList.toggle("modal_window");
+//   textArea.value = "";
+//   title.value = "";
+// }
+
+// EVENT START
 
 const addBtn = document.querySelector(".btn_add");
-addBtn.addEventListener("click", stateModalWindow);
+addBtn.addEventListener("click", () => modalWindo.show());
+confirmBtn.addEventListener("click", () => modalWindo.confirm());
 
-// 2. Add NEW LI ELEMENT
+// EVENT END
 
-function addNewLiElement() {
-  let textArea = document.querySelector(".form_textarea");
-  let textAreaValue = textArea.value;
-  let title = document.querySelector(".form_input");
-  let titleValue = title.value;
-  if (textAreaValue.length === 0 || titleValue.length === 0) {
-    alert("tap some note text");
-    return;
-  }
-  tasksArray.push({
-    // id: crypto.randomUUID(),
-    id: 0,
-    title: titleValue,
-    description: textAreaValue
-  });
-  tasksArray.map((element, index) => {
-    element["index"] = index;
-  });
+// function addNewLiElement() {
+//   let textArea = document.querySelector(".form_textarea");
+//   let textAreaValue = textArea.value;
+//   let title = document.querySelector(".form_input");
+//   let titleValue = title.value;
 
-  // tasksArray.push({ id: 0, title: titleValue, description: textAreaValue });
-  // tasksArray.map((element, index) => (element["id"] = index));
-  localStorage.setItem("notes", JSON.stringify(tasksArray));
-  localStorage.setItem("currentTaskNumber", tasksArray.length);
-
-  // list.innerHTML = "";
-
-  addNewList(tasksArray);
-  changeCurrentNumbers();
-
-  textArea.value = "";
-  title.value = "";
-  stateModalWindow();
-}
+//   // stateModalWindow();
+// }
 
 // evente listeners add new <li></li> element in <ul> list
 // обработчики на добавление в ul и закрытие модального окна
-const confirmBtn = document.querySelector(".confirm-btn");
-const btnCancel = document.querySelector(".cancel-btn");
 
 // ЭТОТ ВАРИАНТ РАБОТАЕТ ТАКЖЕ, ТОЛЬКО ПРОБЛЕМА С ОТРИСОВКОЙ МАССИВА
 // ul.onclick = function (event) {
@@ -158,14 +196,18 @@ function addClickUl() {
     changeCurrentNumbers();
   }
   if (target.className === "btn_edit") {
-    stateModalWindow();
+    modalWindo.show(
+      { title: "test", description: "work" },
+      ({ title, description }) => {
+        alert(`title: ${title}, description: ${description}`);
+      }
+    );
   }
   localStorage.setItem("notes", JSON.stringify(tasksArray));
   localStorage.setItem("currentTaskNumber", tasksArray.length);
 }
 
-confirmBtn.addEventListener("click", addNewLiElement);
-btnCancel.addEventListener("click", stateModalWindow);
+// btnCancel.addEventListener("click", () => modalWindo.close());
 list.addEventListener("click", addClickUl);
 
 // выход из области модального окна, если нажата кнопка esc
@@ -183,7 +225,7 @@ window.addEventListener(
   "keydown",
   function(e) {
     if (e.keyCode == 13) {
-      addNewLiElement();
+      modalWindo.confirm();
     }
   },
   true
