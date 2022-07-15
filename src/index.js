@@ -12,7 +12,7 @@ p.innerText = currentTaskNumber;
 ////////end
 
 /// Start create <li></li> elements from tasksArray
-const liElements = tasksArray.map(element => {
+const liElements = tasksArray.map((element) => {
   return createLiElement(element);
 });
 /// End create <li></li> elements from tasksArray
@@ -28,11 +28,10 @@ function createUlList(liElement) {
 
 // Create UL list with tasks
 const list = createUlList(liElements);
-// console.log(list);
 // END Create UL list with tasks
 
 // FUNCTION create LI elements
-function createLiElement({ id, title, description, index }) {
+function createLiElement({ id, title, description }) {
   const template = document.getElementById("template");
   const content = template.content.cloneNode(true);
   const li = content.querySelector("li");
@@ -44,7 +43,7 @@ function createLiElement({ id, title, description, index }) {
 
   descripton.innerText = description;
 
-  li.id = index;
+  li.id = id;
   return li;
 }
 // END FUNCTION
@@ -53,17 +52,14 @@ function createLiElement({ id, title, description, index }) {
 function addNewList(data) {
   list.innerHTML = "";
 
-  const liElements = data.map((element, index) => {
-    element["index"] = index;
+  const liElements = data.map((element) => {
     return createLiElement(element);
   });
 
   //create Ul elements
-
   createUlList(liElements);
 }
-
-////// END FUNCTION
+// END FUNCTION
 
 // FUNCTION change current numbers of task in ul list
 function changeCurrentNumbers() {
@@ -72,7 +68,7 @@ function changeCurrentNumbers() {
   p.innerText = tasksArray.length;
 }
 
-////// END FUNCTION
+//// END FUNCTION
 
 // HUNDLERS
 
@@ -81,113 +77,131 @@ function changeCurrentNumbers() {
 let modaleWindow = document.getElementById("modale");
 let container = document.querySelector(".container");
 let wrapperModal = document.querySelector(".block_wrapper");
+let textAreaElement = document.querySelector(".form_textarea");
+let titleElement = document.querySelector(".form_input");
+const confirmBtn = document.querySelector(".confirm-btn");
+const btnCancel = document.querySelector(".cancel-btn");
+btnCancel.addEventListener("click", () => modalWindow.close());
 
-function stateModalWindow() {
-  let textArea = document.querySelector(".form_textarea");
-  let title = document.querySelector(".form_input");
-  container.classList.toggle("container_modal");
-  wrapperModal.classList.toggle("block_wrapper_modal");
-  modaleWindow.classList.toggle("modal_window");
-  textArea.value = "";
-  title.value = "";
-}
-// evente listeners open modale window
+const modalWindow = {
+  _confirmHandler: () => {},
+
+  show(cb = () => {}, data = {}) {
+    const { title, description } = data;
+    container.classList.add("container_modal");
+    wrapperModal.classList.add("block_wrapper_modal");
+    modaleWindow.classList.remove("modal_window");
+
+    textAreaElement.value = description || "";
+    titleElement.value = title || "";
+
+    this._confirmHandler = function () {
+      const title = titleElement.value;
+      const description = textAreaElement.value;
+
+      const result = cb({ title, description });
+      if (result && !result.isError) {
+        this.close();
+      }
+    }.bind(modalWindow);
+
+    confirmBtn.addEventListener("click", this._confirmHandler), { once: true };
+  },
+  close() {
+    window.addEventListener(
+      "keydown",
+      function (event) {
+        if (event.keyCode == 27) {
+          modalWindow.close();
+        }
+      },
+      { once: true }
+    );
+    confirmBtn.removeEventListener("click", this._confirmHandler);
+    container.classList.remove("container_modal");
+    wrapperModal.classList.remove("block_wrapper_modal");
+    modaleWindow.classList.add("modal_window");
+  },
+};
+
+// EVENT START
 
 const addBtn = document.querySelector(".btn_add");
-addBtn.addEventListener("click", stateModalWindow);
+addBtn.addEventListener("click", () => modalWindow.show(({ title, description }) => {
+    const result = {};
+    if (description.length === 0 || title.length === 0) {
+      alert("tap some note text");
+      result.isError = true;
+      return result;
+    }
+    // присваивание массиву id, заголовка, содержимого
+    addArrayElement(tasksArray, crypto.randomUUID(), title, description);
+    // поместить элементы в массив с индексом элементов
+    mapElement();
+    //
+    localStorage.setItem("notes", JSON.stringify(tasksArray));
+    localStorage.setItem("currentTaskNumber", tasksArray.length);
 
-// 2. Add NEW LI ELEMENT
+    addNewList(tasksArray);
+    changeCurrentNumbers();
 
-function addNewLiElement() {
-  let textArea = document.querySelector(".form_textarea");
-  let textAreaValue = textArea.value;
-  let title = document.querySelector(".form_input");
-  let titleValue = title.value;
-  if (textAreaValue.length === 0 || titleValue.length === 0) {
-    alert("tap some note text");
-    return;
-  }
-  tasksArray.push({
-    // id: crypto.randomUUID(),
-    id: 0,
-    title: titleValue,
-    description: textAreaValue
-  });
+    return result;
+  }));
+
+function mapElement() {
   tasksArray.map((element, index) => {
     element["index"] = index;
   });
-
-  // tasksArray.push({ id: 0, title: titleValue, description: textAreaValue });
-  // tasksArray.map((element, index) => (element["id"] = index));
-  localStorage.setItem("notes", JSON.stringify(tasksArray));
-  localStorage.setItem("currentTaskNumber", tasksArray.length);
-
-  // list.innerHTML = "";
-
-  addNewList(tasksArray);
-  changeCurrentNumbers();
-
-  textArea.value = "";
-  title.value = "";
-  stateModalWindow();
 }
 
-// evente listeners add new <li></li> element in <ul> list
-// обработчики на добавление в ul и закрытие модального окна
-const confirmBtn = document.querySelector(".confirm-btn");
-const btnCancel = document.querySelector(".cancel-btn");
-
-// ЭТОТ ВАРИАНТ РАБОТАЕТ ТАКЖЕ, ТОЛЬКО ПРОБЛЕМА С ОТРИСОВКОЙ МАССИВА
-// ul.onclick = function (event) {
-//   let td = event.target.closest(".btn_delete");
-//   ul.childNodes.forEach((node) => {
-//     if (node.contains(td)) {
-//       node.remove();
-//       tasksArray.splice(ul.childNodes.node,1);
-//     }
-//     localStorage.setItem("notes", JSON.stringify(tasksArray));
-//   });
+function addArrayElement(arr, id, title, description) {
+  arr.push({
+    id: id,
+    title: title,
+    description: description,
+  });
+}
 
 function addClickUl() {
   const target = event.target;
-  const currentIndex = target.offsetParent.id;
+  const currentId = target.offsetParent.id;
 
   if (target.className === "btn_delete") {
-    tasksArray.splice(currentIndex, 1);
+    const indexArray = tasksArray.findIndex(({ id }) => id === currentId);
+    tasksArray.splice(indexArray, 1);
     addNewList(tasksArray);
     changeCurrentNumbers();
   }
   if (target.className === "btn_edit") {
-    stateModalWindow();
+    const indexArray = tasksArray.findIndex(({ id }) => id === currentId);
+    modalWindow.show(
+      ({ title, description }) => {
+        const result = {};
+        if (description.length === 0 || title.length === 0) {
+          alert("tap some note text");
+          result.isError = true;
+          return result;
+        }
+        const task = tasksArray[indexArray];
+        task.title = title;
+        task.description = description;
+    
+        localStorage.setItem("notes", JSON.stringify(tasksArray));
+        localStorage.setItem("currentTaskNumber", tasksArray.length);
+    
+        addNewList(tasksArray);
+    
+        return result;
+      },
+      tasksArray[indexArray]
+    );
   }
   localStorage.setItem("notes", JSON.stringify(tasksArray));
   localStorage.setItem("currentTaskNumber", tasksArray.length);
 }
 
-confirmBtn.addEventListener("click", addNewLiElement);
-btnCancel.addEventListener("click", stateModalWindow);
 list.addEventListener("click", addClickUl);
 
-// выход из области модального окна, если нажата кнопка esc
-window.addEventListener(
-  "keydown",
-  function(event) {
-    if (event.keyCode == 27) {
-      stateModalWindow();
-    }
-  },
-  true
-);
-// выход из области модального окна, если нажата кнопка enter
-window.addEventListener(
-  "keydown",
-  function(e) {
-    if (e.keyCode == 13) {
-      addNewLiElement();
-    }
-  },
-  true
-);
 // Electro clock(shows the current time)
 function update() {
   let watch = document.querySelector(".time-board p");
@@ -211,3 +225,4 @@ function clockStart() {
   update();
 }
 clockStart();
+
