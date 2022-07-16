@@ -47,7 +47,7 @@ function createLiElement({ id, title, description, user, time}) {
 
   const addTime = content.querySelector('.task_li_span_time');
   addTime.innerText = time;
-
+ 
   li.id = id;
   return li;
 }
@@ -244,3 +244,27 @@ function clockStart() {
   update();
 }
 clockStart();
+
+
+// создание users
+const API = "https://62d2ff0881cb1ecafa6906af.mockapi.io/api/v1/";
+const getAllUser = async () => {
+  const resp = await fetch(`${API}/users`);
+  const json = await resp.json();
+document.body.append(JSON.stringify(json));
+};
+
+const addUser = async (tasksArray) => {
+
+  const resp = await fetch(`${API}/users`, {
+    method: 'POST',
+    headers: {
+      'Content-Type' : 'application/json'
+    },
+    userInput: JSON.stringify(tasksArray)
+  });
+  
+  return await resp.json();
+};
+
+getAllUser();
