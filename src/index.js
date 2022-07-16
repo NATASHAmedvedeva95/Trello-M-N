@@ -31,7 +31,7 @@ const list = createUlList(liElements);
 // END Create UL list with tasks
 
 // FUNCTION create LI elements
-function createLiElement({ id, title, description }) {
+function createLiElement({ id, title, description, user, time}) {
   const template = document.getElementById("template");
   const content = template.content.cloneNode(true);
   const li = content.querySelector("li");
@@ -40,8 +40,13 @@ function createLiElement({ id, title, description }) {
   titleElement.innerText = title;
 
   const descripton = content.querySelector(".task_li_textarea");
-
   descripton.innerText = description;
+
+  const userInput = content.querySelector('.task_li_span_user');
+  userInput.innerText = user;
+
+  const addTime = content.querySelector('.task_li_span_time');
+  addTime.innerText = time;
 
   li.id = id;
   return li;
@@ -79,6 +84,8 @@ let container = document.querySelector(".container");
 let wrapperModal = document.querySelector(".block_wrapper");
 let textAreaElement = document.querySelector(".form_textarea");
 let titleElement = document.querySelector(".form_input");
+let userElement = document.getElementById('select_user');
+let timeElement = document.querySelector('.task_li_span_time');
 const confirmBtn = document.querySelector(".confirm-btn");
 const btnCancel = document.querySelector(".cancel-btn");
 btnCancel.addEventListener("click", () => modalWindow.close());
@@ -87,19 +94,23 @@ const modalWindow = {
   _confirmHandler: () => {},
 
   show(cb = () => {}, data = {}) {
-    const { title, description } = data;
+    const { title, description, user, time} = data;
     container.classList.add("container_modal");
     wrapperModal.classList.add("block_wrapper_modal");
     modaleWindow.classList.remove("modal_window");
 
     textAreaElement.value = description || "";
     titleElement.value = title || "";
+    userElement.options[userElement.selectedIndex].value = user || "";
+    timeElement = time;
 
     this._confirmHandler = function () {
       const title = titleElement.value;
       const description = textAreaElement.value;
+      const user = userElement.options[userElement.selectedIndex].value;
+      const time = timeElement;
 
-      const result = cb({ title, description });
+      const result = cb({ title, description, user, time });
       if (result && !result.isError) {
         this.close();
       }
@@ -127,15 +138,19 @@ const modalWindow = {
 // EVENT START
 
 const addBtn = document.querySelector(".btn_add");
-addBtn.addEventListener("click", () => modalWindow.show(({ title, description }) => {
+addBtn.addEventListener("click", () => modalWindow.show(({ title, description, user }) =>{
     const result = {};
-    if (description.length === 0 || title.length === 0) {
+    if (description.length === 0 || title.length === 0 || user.length === 0) {
       alert("tap some note text");
       result.isError = true;
       return result;
     }
     // присваивание массиву id, заголовка, содержимого
-    addArrayElement(tasksArray, crypto.randomUUID(), title, description);
+    let options = {
+      hour: "numeric",
+      minute: "numeric",
+    };
+    addArrayElement(tasksArray, crypto.randomUUID(), title, description, user, new Date ().toLocaleString("ru", options));
     // поместить элементы в массив с индексом элементов
     mapElement();
     //
@@ -154,11 +169,13 @@ function mapElement() {
   });
 }
 
-function addArrayElement(arr, id, title, description) {
+function addArrayElement(arr, id, title, description, user, time) {
   arr.push({
     id: id,
     title: title,
     description: description,
+    user: user,
+    time: time
   });
 }
 
@@ -175,9 +192,9 @@ function addClickUl() {
   if (target.className === "btn_edit") {
     const indexArray = tasksArray.findIndex(({ id }) => id === currentId);
     modalWindow.show(
-      ({ title, description }) => {
+      ({ title, description, user }) => {
         const result = {};
-        if (description.length === 0 || title.length === 0) {
+        if (description.length === 0 || title.length === 0 || user. length === 0) {
           alert("tap some note text");
           result.isError = true;
           return result;
@@ -185,7 +202,10 @@ function addClickUl() {
         const task = tasksArray[indexArray];
         task.title = title;
         task.description = description;
+        task.user = user;
     
+
+
         localStorage.setItem("notes", JSON.stringify(tasksArray));
         localStorage.setItem("currentTaskNumber", tasksArray.length);
     
@@ -225,4 +245,3 @@ function clockStart() {
   update();
 }
 clockStart();
-
