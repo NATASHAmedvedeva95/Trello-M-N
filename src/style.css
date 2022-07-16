@@ -175,6 +175,9 @@
   transform: translate(-50%, -50%);
   z-index: 200;
 }
+.modal_window_delete{
+  display: none;
+}
 .form_input {
   margin-bottom: 15px;
   width: 122px;
