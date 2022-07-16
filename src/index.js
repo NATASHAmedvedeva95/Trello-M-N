@@ -101,7 +101,7 @@ const modalWindow = {
 
     textAreaElement.value = description || "";
     titleElement.value = title || "";
-    userElement.options[userElement.selectedIndex].value = user || "";
+    userElement.options[userElement.selectedIndex].value = user || "" ;
     timeElement = time;
 
     this._confirmHandler = function () {
@@ -192,9 +192,9 @@ function addClickUl() {
   if (target.className === "btn_edit") {
     const indexArray = tasksArray.findIndex(({ id }) => id === currentId);
     modalWindow.show(
-      ({ title, description, user }) => {
+      ({ title, description, user, time}) => {
         const result = {};
-        if (description.length === 0 || title.length === 0 || user. length === 0) {
+        if (description.length === 0 || title.length === 0 || user.length === 0) {
           alert("tap some note text");
           result.isError = true;
           return result;
@@ -203,9 +203,8 @@ function addClickUl() {
         task.title = title;
         task.description = description;
         task.user = user;
+        task.time = time;
     
-
-
         localStorage.setItem("notes", JSON.stringify(tasksArray));
         localStorage.setItem("currentTaskNumber", tasksArray.length);
     
