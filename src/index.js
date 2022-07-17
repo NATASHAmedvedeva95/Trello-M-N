@@ -7,31 +7,69 @@ let currentTaskNumber = currentTaskNumberJSON;
 // End Data Block
 
 ////number of li elements
-let p = document.querySelector(".todo");
-p.innerText = currentTaskNumber;
+// let p = document.querySelector(".todo");
+// p.innerText = currentTaskNumber;
 ////////end
 
 /// Start create <li></li> elements from tasksArray
-const liElements = tasksArray.map((element) => {
-  return createLiElement(element);
+// const liElements = tasksArray.map(element => {
+//   return createLiElement(element);
+// });
+const liElementsTodo = tasksArray.filter(element => {
+ 
+  if(element.state === "todo"){
+    console.log(element)
+    console.log(createLiElement(element))
+    return element
+  }
+   
+  
+}).map(element => {
+    return createLiElement(element);
 });
+
+const liElementsProgress = tasksArray.filter(element => {
+ 
+  if(element.state === "inprogress"){
+    console.log(element)
+    console.log(createLiElement(element))
+    return element
+  }
+   
+  
+}).map(element => {
+    return createLiElement(element);
+});
+
+
+
 /// End create <li></li> elements from tasksArray
+
+// Create UL list with tasks
+
+const list = createUlList(liElementsTodo)
+const progressList = createUlProgress(liElementsProgress)
+
+// END Create UL list with tasks
 
 // FUNCTION create Ul elements with liElements in function parameters
 // удаление элементов по одному
 function createUlList(liElement) {
-  const ul = document.querySelector(".block_item_todo");
+
+  const ul = document.querySelector(".todoul");
   ul.append(...liElement);
+  let p = document.querySelector(".todo");
+  p.innerText = liElement.length;
   return ul;
+  
 }
+
 // END FUNCTION
 
-// Create UL list with tasks
-const list = createUlList(liElements);
-// END Create UL list with tasks
+
 
 // FUNCTION create LI elements
-function createLiElement({ id, title, description, user, time}) {
+function createLiElement({ id, title, description, user, time }) {
   const template = document.getElementById("template");
   const content = template.content.cloneNode(true);
   const li = content.querySelector("li");
@@ -42,13 +80,14 @@ function createLiElement({ id, title, description, user, time}) {
   const descripton = content.querySelector(".task_li_textarea");
   descripton.innerText = description;
 
-  const userInput = content.querySelector('.task_li_span_user');
+  const userInput = content.querySelector(".task_li_span_user");
   userInput.innerText = user;
 
-  const addTime = content.querySelector('.task_li_span_time');
+  const addTime = content.querySelector(".task_li_span_time");
   addTime.innerText = time;
- 
+
   li.id = id;
+  console.log(li)
   return li;
 }
 // END FUNCTION
@@ -57,7 +96,7 @@ function createLiElement({ id, title, description, user, time}) {
 function addNewList(data) {
   list.innerHTML = "";
 
-  const liElements = data.map((element) => {
+  const liElements = data.map(element => {
     return createLiElement(element);
   });
 
@@ -66,8 +105,35 @@ function addNewList(data) {
 }
 // END FUNCTION
 
+// FUNCTION create and fill ProgressList
+function createUlProgress(liElement) {
+  const progressUl = document.querySelector(".progressul");
+  progressUl.innerHTML = "";
+  progressUl.append(...liElement);
+  changeCurrentNumbersProgress(liElement)
+  return progressUl;
+}
+function changeCurrentNumbersProgress(arr) {
+  let p = document.querySelector(".progress");
+
+  p.innerText = arr.length;
+}
+function createProgressList() {
+  const arrayProgress = tasksArray.filter(elem => {
+    return elem.state === "inprogress";
+  });
+  
+  const liElements = arrayProgress.map(element => {
+    return createLiElement(element);
+  });
+  console.log(arrayProgress)
+  
+  createUlProgress(liElements);
+  changeCurrentNumbersProgress(arrayProgress)
+}
+
 // FUNCTION change current numbers of task in ul list
-function changeCurrentNumbers() {
+function changeCurrentNumbersTODO() {
   let p = document.querySelector(".todo");
 
   p.innerText = tasksArray.length;
@@ -84,8 +150,8 @@ let container = document.querySelector(".container");
 let wrapperModal = document.querySelector(".block_wrapper");
 let textAreaElement = document.querySelector(".form_textarea");
 let titleElement = document.querySelector(".form_input");
-let userElement = document.getElementById('select_user');
-let timeElement = document.querySelector('.task_li_span_time');
+let userElement = document.getElementById("select_user");
+let timeElement = document.querySelector(".task_li_span_time");
 const confirmBtn = document.querySelector(".confirm-btn");
 const btnCancel = document.querySelector(".cancel-btn");
 btnCancel.addEventListener("click", () => modalWindow.close());
@@ -94,17 +160,17 @@ const modalWindow = {
   _confirmHandler: () => {},
 
   show(cb = () => {}, data = {}) {
-    const { title, description, user, time} = data;
+    const { title, description, user, time } = data;
     container.classList.add("container_modal");
     wrapperModal.classList.add("block_wrapper_modal");
     modaleWindow.classList.remove("modal_window");
 
     textAreaElement.value = description || "";
     titleElement.value = title || "";
-    userElement.options[userElement.selectedIndex].value = user || "" ;
+    userElement.options[userElement.selectedIndex].value = user || "";
     timeElement = time;
 
-    this._confirmHandler = function () {
+    this._confirmHandler = function() {
       const title = titleElement.value;
       const description = textAreaElement.value;
       const user = userElement.options[userElement.selectedIndex].value;
@@ -121,7 +187,7 @@ const modalWindow = {
   close() {
     window.addEventListener(
       "keydown",
-      function (event) {
+      function(event) {
         if (event.keyCode == 27) {
           modalWindow.close();
         }
@@ -132,13 +198,14 @@ const modalWindow = {
     container.classList.remove("container_modal");
     wrapperModal.classList.remove("block_wrapper_modal");
     modaleWindow.classList.add("modal_window");
-  },
+  }
 };
 
 // EVENT START
 
 const addBtn = document.querySelector(".btn_add");
-addBtn.addEventListener("click", () => modalWindow.show(({ title, description, user }) =>{
+addBtn.addEventListener("click", () =>
+  modalWindow.show(({ title, description, user }) => {
     const result = {};
     if (description.length === 0 || title.length === 0 || user.length === 0) {
       alert("tap some note text");
@@ -148,9 +215,17 @@ addBtn.addEventListener("click", () => modalWindow.show(({ title, description, u
     // присваивание массиву id, заголовка, содержимого
     let options = {
       hour: "numeric",
-      minute: "numeric",
+      minute: "numeric"
     };
-    addArrayElement(tasksArray, crypto.randomUUID(), title, description, user, new Date ().toLocaleString("ru", options));
+    addArrayElement(
+      tasksArray,
+      crypto.randomUUID(),
+      title,
+      description,
+      user,
+      new Date().toLocaleString("ru", options),
+      "todo"
+    );
     // поместить элементы в массив с индексом элементов
     mapElement();
     //
@@ -158,10 +233,11 @@ addBtn.addEventListener("click", () => modalWindow.show(({ title, description, u
     localStorage.setItem("currentTaskNumber", tasksArray.length);
 
     addNewList(tasksArray);
-    changeCurrentNumbers();
+    changeCurrentNumbersTODO();
 
     return result;
-  }));
+  })
+);
 
 function mapElement() {
   tasksArray.map((element, index) => {
@@ -169,52 +245,68 @@ function mapElement() {
   });
 }
 
-function addArrayElement(arr, id, title, description, user, time) {
+function addArrayElement(arr, id, title, description, user, time, state) {
   arr.push({
-    id: id,
-    title: title,
-    description: description,
-    user: user,
-    time: time
+    id,
+    title,
+    description,
+    user,
+    time,
+    state
   });
 }
 
 function addClickUl() {
   const target = event.target;
   const currentId = target.offsetParent.id;
+  const indexArray = tasksArray.findIndex(({ id }) => id === currentId);
 
   if (target.className === "btn_delete") {
-    const indexArray = tasksArray.findIndex(({ id }) => id === currentId);
+    // const indexArray = tasksArray.findIndex(({ id }) => id === currentId);
     tasksArray.splice(indexArray, 1);
     addNewList(tasksArray);
-    changeCurrentNumbers();
+    changeCurrentNumbersTODO();
   }
   if (target.className === "btn_edit") {
-    const indexArray = tasksArray.findIndex(({ id }) => id === currentId);
-    modalWindow.show(
-      ({ title, description, user, time}) => {
-        const result = {};
-        if (description.length === 0 || title.length === 0 || user.length === 0) {
-          alert("tap some note text");
-          result.isError = true;
-          return result;
-        }
-        const task = tasksArray[indexArray];
-        task.title = title;
-        task.description = description;
-        task.user = user;
-        task.time = time;
-    
-        localStorage.setItem("notes", JSON.stringify(tasksArray));
-        localStorage.setItem("currentTaskNumber", tasksArray.length);
-    
-        addNewList(tasksArray);
-    
+    // const indexArray = tasksArray.findIndex(({ id }) => id === currentId);
+    modalWindow.show(({ title, description, user, time }) => {
+      const result = {};
+      if (description.length === 0 || title.length === 0 || user.length === 0) {
+        alert("tap some note text");
+        result.isError = true;
         return result;
-      },
-      tasksArray[indexArray]
-    );
+      }
+      const task = tasksArray[indexArray];
+      task.title = title;
+      task.description = description;
+      task.user = user;
+      task.time = time;
+
+      localStorage.setItem("notes", JSON.stringify(tasksArray));
+      localStorage.setItem("currentTaskNumber", tasksArray.length);
+
+      addNewList(tasksArray);
+
+      return result;
+    }, tasksArray[indexArray]);
   }
+  if (target.className === "form_btn") {
+    tasksArray[indexArray].state = "inprogress";
+    console.log(tasksArray[indexArray].state);
+
+    /////1ST FILTER BY 'TODO' STATE
+    const arrayTodo = tasksArray.filter(elem => {
+      return elem.state === "todo";
+    });
+    console.log(arrayTodo);
+
+
+    createProgressList()
+    addNewList(arrayTodo);
+    let p = document.querySelector(".todo");
+    p.innerText = arrayTodo.length;
+  }
+
   localStorage.setItem("notes", JSON.stringify(tasksArray));
   localStorage.setItem("currentTaskNumber", tasksArray.length);
 }
@@ -245,26 +337,25 @@ function clockStart() {
 }
 clockStart();
 
-
 // создание users
-const API = "https://62d2ff0881cb1ecafa6906af.mockapi.io/api/v1/";
-const getAllUser = async () => {
-  const resp = await fetch(`${API}/users`);
-  const json = await resp.json();
-document.body.append(JSON.stringify(json));
-};
+// const API = "https://62d2ff0881cb1ecafa6906af.mockapi.io/api/v1/";
+// const getAllUser = async () => {
+//   const resp = await fetch(`${API}/users`);
+//   const json = await resp.json();
+// document.body.append(JSON.stringify(json));
+// };
 
-const addUser = async (tasksArray) => {
+// const addUser = async (tasksArray) => {
 
-  const resp = await fetch(`${API}/users`, {
-    method: 'POST',
-    headers: {
-      'Content-Type' : 'application/json'
-    },
-    userInput: JSON.stringify(tasksArray)
-  });
-  
-  return await resp.json();
-};
+//   const resp = await fetch(`${API}/users`, {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type' : 'application/json'
+//     },
+//     userInput: JSON.stringify(tasksArray)
+//   });
 
-getAllUser();
+//   return await resp.json();
+// };
+
+// getAllUser();
