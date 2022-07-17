@@ -31,7 +31,7 @@ const list = createUlList(liElements);
 // END Create UL list with tasks
 
 // FUNCTION create LI elements
-function createLiElement({ id, title, description, user, time}) {
+function createLiElement({ id, title, description, user, time }) {
   const template = document.getElementById("template");
   const content = template.content.cloneNode(true);
   const li = content.querySelector("li");
@@ -42,12 +42,12 @@ function createLiElement({ id, title, description, user, time}) {
   const descripton = content.querySelector(".task_li_textarea");
   descripton.innerText = description;
 
-  const userInput = content.querySelector('.task_li_span_user');
+  const userInput = content.querySelector(".task_li_span_user");
   userInput.innerText = user;
 
-  const addTime = content.querySelector('.task_li_span_time');
+  const addTime = content.querySelector(".task_li_span_time");
   addTime.innerText = time;
- 
+
   li.id = id;
   return li;
 }
@@ -84,8 +84,8 @@ let container = document.querySelector(".container");
 let wrapperModal = document.querySelector(".block_wrapper");
 let textAreaElement = document.querySelector(".form_textarea");
 let titleElement = document.querySelector(".form_input");
-let userElement = document.getElementById('select_user');
-let timeElement = document.querySelector('.task_li_span_time');
+let userElement = document.getElementById("select_user");
+let timeElement = document.querySelector(".task_li_span_time");
 const confirmBtn = document.querySelector(".confirm-btn");
 const btnCancel = document.querySelector(".cancel-btn");
 btnCancel.addEventListener("click", () => modalWindow.close());
@@ -94,14 +94,14 @@ const modalWindow = {
   _confirmHandler: () => {},
 
   show(cb = () => {}, data = {}) {
-    const { title, description, user, time} = data;
+    const { title, description, user, time } = data;
     container.classList.add("container_modal");
     wrapperModal.classList.add("block_wrapper_modal");
     modaleWindow.classList.remove("modal_window");
 
     textAreaElement.value = description || "";
     titleElement.value = title || "";
-    userElement.options[userElement.selectedIndex].value = getAllUser() || "" ;
+    userElement.options[userElement.selectedIndex].value = user || "";
     timeElement = time;
 
     this._confirmHandler = function () {
@@ -138,7 +138,8 @@ const modalWindow = {
 // EVENT START
 
 const addBtn = document.querySelector(".btn_add");
-addBtn.addEventListener("click", () => modalWindow.show(({ title, description, user }) =>{
+addBtn.addEventListener("click", () =>
+  modalWindow.show(({ title, description, user }) => {
     const result = {};
     if (description.length === 0 || title.length === 0 || user.length === 0) {
       alert("tap some note text");
@@ -150,7 +151,14 @@ addBtn.addEventListener("click", () => modalWindow.show(({ title, description, u
       hour: "numeric",
       minute: "numeric",
     };
-    addArrayElement(tasksArray, crypto.randomUUID(), title, description, user, new Date ().toLocaleString("ru", options));
+    addArrayElement(
+      tasksArray,
+      crypto.randomUUID(),
+      title,
+      description,
+      user,
+      new Date().toLocaleString("ru", options)
+    );
     // поместить элементы в массив с индексом элементов
     mapElement();
     //
@@ -161,7 +169,8 @@ addBtn.addEventListener("click", () => modalWindow.show(({ title, description, u
     changeCurrentNumbers();
 
     return result;
-  }));
+  })
+);
 
 function mapElement() {
   tasksArray.map((element, index) => {
@@ -175,7 +184,7 @@ function addArrayElement(arr, id, title, description, user, time) {
     title: title,
     description: description,
     user: user,
-    time: time
+    time: time,
   });
 }
 
@@ -191,29 +200,26 @@ function addClickUl() {
   }
   if (target.className === "btn_edit") {
     const indexArray = tasksArray.findIndex(({ id }) => id === currentId);
-    modalWindow.show(
-      ({ title, description, user, time}) => {
-        const result = {};
-        if (description.length === 0 || title.length === 0 || user.length === 0) {
-          alert("tap some note text");
-          result.isError = true;
-          return result;
-        }
-        const task = tasksArray[indexArray];
-        task.title = title;
-        task.description = description;
-        task.user = user;
-        task.time = time;
-    
-        localStorage.setItem("notes", JSON.stringify(tasksArray));
-        localStorage.setItem("currentTaskNumber", tasksArray.length);
-    
-        addNewList(tasksArray);
-    
+    modalWindow.show(({ title, description, user, time }) => {
+      const result = {};
+      if (description.length === 0 || title.length === 0 || user.length === 0) {
+        alert("tap some note text");
+        result.isError = true;
         return result;
-      },
-      tasksArray[indexArray]
-    );
+      }
+      const task = tasksArray[indexArray];
+      task.title = title;
+      task.description = description;
+      task.user = user;
+      task.time = time;
+
+      localStorage.setItem("notes", JSON.stringify(tasksArray));
+      localStorage.setItem("currentTaskNumber", tasksArray.length);
+
+      addNewList(tasksArray);
+
+      return result;
+    }, tasksArray[indexArray]);
   }
   localStorage.setItem("notes", JSON.stringify(tasksArray));
   localStorage.setItem("currentTaskNumber", tasksArray.length);
@@ -245,36 +251,37 @@ function clockStart() {
 }
 clockStart();
 
-
 // создание users
 const API = "https://62d2ff0881cb1ecafa6906af.mockapi.io/api/v1/";
 const getAllUser = async () => {
   const resp = await fetch(`${API}/users`);
   const json = await resp.json();
   const jsonString = JSON.stringify(json);
-  for ( let k of json) {
-    console.log(k.name);
-    const select = document.querySelector('select option');
-    select.append(k.name);
-  }
- 
+  const select = document.querySelectorAll("select option");
+  // // const valueSelect = select.options[userElement.selectedIndex].value;
+  // console.log(userElement.options[userElement.selectedIndex].value);
+  select.forEach(function (item) {
+    for (let k of json) {
+      item.innerText = k.name;
+    }
+  //   // item.innerText = k.name;
+  });
+
   // console.log(JSON.stringify(jsonString));
 };
 
 getAllUser();
 
-
 const addUser = async (tasksArray) => {
-
   const resp = await fetch(`${API}/users`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type' : 'application/json'
+      "Content-Type": "application/json",
     },
-    userInput: JSON.stringify(tasksArray)
+    userInput: JSON.stringify(tasksArray),
   });
-  
+
   return await resp.json();
- 
 };
 addUser();
+
