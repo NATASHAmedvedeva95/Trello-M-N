@@ -101,7 +101,7 @@ const modalWindow = {
 
     textAreaElement.value = description || "";
     titleElement.value = title || "";
-    userElement.options[userElement.selectedIndex].value = user || "" ;
+    userElement.options[userElement.selectedIndex].value = getAllUser() || "" ;
     timeElement = time;
 
     this._confirmHandler = function () {
@@ -251,8 +251,18 @@ const API = "https://62d2ff0881cb1ecafa6906af.mockapi.io/api/v1/";
 const getAllUser = async () => {
   const resp = await fetch(`${API}/users`);
   const json = await resp.json();
-document.body.append(JSON.stringify(json));
+  const jsonString = JSON.stringify(json);
+  for ( let k of json) {
+    console.log(k.name);
+    const select = document.querySelector('select option');
+    select.append(k.name);
+  }
+ 
+  // console.log(JSON.stringify(jsonString));
 };
+
+getAllUser();
+
 
 const addUser = async (tasksArray) => {
 
@@ -265,6 +275,6 @@ const addUser = async (tasksArray) => {
   });
   
   return await resp.json();
+ 
 };
-
-getAllUser();
+addUser();
