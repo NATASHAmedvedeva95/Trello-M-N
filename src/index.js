@@ -227,12 +227,12 @@ addBtn.addEventListener("click", () =>
       "todo"
     );
     // поместить элементы в массив с индексом элементов
-    mapElement();
+    // mapElement();
     //
     localStorage.setItem("notes", JSON.stringify(tasksArray));
     localStorage.setItem("currentTaskNumber", tasksArray.length);
 
-    addNewList(tasksArray);
+    addNewList(mapElement());
     changeCurrentNumbersTODO();
 
     return result;
@@ -240,9 +240,23 @@ addBtn.addEventListener("click", () =>
 );
 
 function mapElement() {
-  tasksArray.map((element, index) => {
-    element["index"] = index;
-  });
+  // tasksArray.map((element, index) => {
+  //   element["index"] = index;
+  // });
+  const tasksArrayTodo = tasksArray.filter(element => {
+ 
+    if(element.state === "todo"){
+
+      return element
+      // console.log(createLiElement(element))
+
+    }
+     
+    
+  })
+  console.log(tasksArrayTodo)
+
+  return tasksArrayTodo
 }
 
 function addArrayElement(arr, id, title, description, user, time, state) {
