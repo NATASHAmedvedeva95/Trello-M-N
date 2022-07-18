@@ -15,58 +15,50 @@ let currentTaskNumber = currentTaskNumberJSON;
 // const liElements = tasksArray.map(element => {
 //   return createLiElement(element);
 // });
-const liElementsTodo = tasksArray.filter(element => {
- 
-  if(element.state === "todo"){
-    // console.log(element)
-    // console.log(createLiElement(element))
-    return element
-  }
-   
-  
-}).map(element => {
+const liElementsTodo = tasksArray
+  .filter(element => {
+    if (element.state === "todo") {
+      // console.log(element)
+      // console.log(createLiElement(element))
+      return element;
+    }
+  })
+  .map(element => {
     return createLiElement(element);
-});
+  });
 
-const liElementsProgress = tasksArray.filter(element => {
- 
-  if(element.state === "inprogress"){
-    // console.log(element)
-    // console.log(createLiElement(element))
-    return element
-  }
-   
-  
-}).map(element => {
-    return createLiElement(element);
-});
-
-
+const liElementsProgress = tasksArray
+  .filter(element => {
+    if (element.state === "inprogress") {
+      // console.log(element)
+      // console.log(createLiElement(element))
+      return element;
+    }
+  })
+  .map(element => {
+    return createProgresLiElement(element);
+  });
 
 /// End create <li></li> elements from tasksArray
 
 // Create UL list with tasks
 
-const list = createUlList(liElementsTodo)
-const progressList = createUlProgress(liElementsProgress)
+const list = createUlList(liElementsTodo);
+const progressList = createUlProgress(liElementsProgress);
 
 // END Create UL list with tasks
 
 // FUNCTION create Ul elements with liElements in function parameters
 // удаление элементов по одному
 function createUlList(liElement) {
-
   const ul = document.querySelector(".todoul");
   ul.append(...liElement);
   let p = document.querySelector(".todo");
   p.innerText = liElement.length;
   return ul;
-  
 }
 
 // END FUNCTION
-
-
 
 // FUNCTION create LI elements for todo list
 function createLiElement({ id, title, description, user, time }) {
@@ -92,6 +84,61 @@ function createLiElement({ id, title, description, user, time }) {
 }
 // END FUNCTION
 
+// FUNCTION create LI elements for PROGRESS list
+function createProgresLiElement({ id, title, description, user, time }) {
+  const template = document.getElementById("template");
+  const content = template.content.cloneNode(true);
+  const li = content.querySelector("li");
+
+  // create button BACK
+
+  const editBtn = content.querySelector(".btn_edit");
+  // backBtn.classList.add("btn_back");
+  // backBtn.innerText = 'Back';
+  editBtn.remove();
+  const divBtn = content.querySelector(".li_btn");
+  const backBtn = document.createElement("button");
+  backBtn.classList.add("btn_back");
+  backBtn.innerText = "Back";
+  divBtn.append(backBtn)
+
+  /////////////end////////////
+  // create button COMPLETE
+
+  const deleteBtn = content.querySelector(".btn_delete");
+  console.log(deleteBtn)
+  // backBtn.classList.add("btn_back");
+  // backBtn.innerText = 'Back';
+  deleteBtn.remove();
+  const completeBtn = document.createElement("button");
+  completeBtn.classList.add("complete_btn");
+  completeBtn.innerText = "Complete";
+  divBtn.append(completeBtn)
+
+  /////////////end////////////
+  //////////delete move button///////
+  const moveBtn = content.querySelector(".form_btn");
+  moveBtn.remove();
+
+
+  const titleElement = content.querySelector(".title");
+  titleElement.innerText = title;
+  console.log(titleElement);
+
+  const descripton = content.querySelector(".task_li_textarea");
+  descripton.innerText = description;
+
+  const userInput = content.querySelector(".task_li_span_user");
+  userInput.innerText = user;
+
+  const addTime = content.querySelector(".task_li_span_time");
+  addTime.innerText = time;
+
+  li.id = id;
+
+  return li;
+}
+// END FUNCTION LI elements for PROGRESS list
 
 // FUNCTION create NEW LI elements WITH NEW ARRAY DATA
 function addNewList(data) {
@@ -106,12 +153,26 @@ function addNewList(data) {
 }
 // END FUNCTION
 
+// FUNCTION create NEW LI elements WITH NEW ARRAY DATA
+// создает li карточку с кнопками back и complete
+function addNewProgressList(data) {
+  list.innerHTML = "";
+
+  const liElements = data.map(element => {
+    return createProgresLiElement(element);
+  });
+
+  //create Ul elements
+  createUlList(liElements);
+}
+// END FUNCTION
+
 // FUNCTION create and fill ProgressList
 function createUlProgress(liElement) {
   const progressUl = document.querySelector(".progressul");
   progressUl.innerHTML = "";
   progressUl.append(...liElement);
-  changeCurrentNumbersProgress(liElement)
+  changeCurrentNumbersProgress(liElement);
   return progressUl;
 }
 function changeCurrentNumbersProgress(arr) {
@@ -119,19 +180,20 @@ function changeCurrentNumbersProgress(arr) {
 
   p.innerText = arr.length;
 }
-function createProgressList() {
+//////создает ul список карт inprogress
 
+function createProgressList() {
   const arrayProgress = tasksArray.filter(elem => {
     return elem.state === "inprogress";
   });
-  
+
   const liElements = arrayProgress.map(element => {
-    return createLiElement(element);
+    return createProgresLiElement(element);
   });
   // console.log(arrayProgress)
-  
+
   createUlProgress(liElements);
-  changeCurrentNumbersProgress(arrayProgress)
+  changeCurrentNumbersProgress(arrayProgress);
 }
 
 // FUNCTION change current numbers of task in ul list
@@ -228,13 +290,12 @@ addBtn.addEventListener("click", () =>
       new Date().toLocaleString("ru", options),
       "todo"
     );
-   
 
     localStorage.setItem("notes", JSON.stringify(tasksArray));
     localStorage.setItem("currentTaskNumber", tasksArray.length);
 
-     // добавить новые карты и поместить элементы в массив с индексом элементов
-   
+    // добавить новые карты и поместить элементы в массив с индексом элементов
+
     addNewList(mapElement());
     changeCurrentNumbersTODO();
 
@@ -247,20 +308,15 @@ function mapElement() {
   //   element["index"] = index;
   // });
   const tasksArrayTodo = tasksArray.filter(element => {
- 
-    if(element.state === "todo"){
-
-      return element
+    if (element.state === "todo") {
+      return element;
       // console.log(createLiElement(element))
-
     }
-     
-    
-  })
+  });
 
   // console.log(tasksArrayTodo)
 
-  return tasksArrayTodo
+  return tasksArrayTodo;
 }
 
 function addArrayElement(arr, id, title, description, user, time, state) {
@@ -280,13 +336,11 @@ function addClickUl() {
   const indexArray = tasksArray.findIndex(({ id }) => id === currentId);
 
   if (target.className === "btn_delete") {
-
     tasksArray.splice(indexArray, 1);
     addNewList(tasksArray);
     changeCurrentNumbersTODO();
   }
   if (target.className === "btn_edit") {
-
     modalWindow.show(({ title, description, user, time }) => {
       const result = {};
       if (description.length === 0 || title.length === 0 || user.length === 0) {
@@ -320,18 +374,30 @@ function addClickUl() {
 
     // console.log(arrayTodo);
 
-
     createProgressList()
     addNewList(arrayTodo);
+
     let p = document.querySelector(".todo");
     p.innerText = arrayTodo.length;
   }
+  if (target.className === "btn_back") {
+    tasksArray[indexArray].state = "todo";
 
+    console.log('back btn')
+    console.log(tasksArray[indexArray].state )
+    addNewList(mapElement())
+    createProgressList();
+
+    // console.log(tasksArray[indexArray].state);
+
+
+  }
   localStorage.setItem("notes", JSON.stringify(tasksArray));
   localStorage.setItem("currentTaskNumber", tasksArray.length);
 }
 
 list.addEventListener("click", addClickUl);
+progressList.addEventListener("click", addClickUl);
 
 // Electro clock(shows the current time)
 
@@ -366,36 +432,31 @@ const getAllUser = async () => {
   const resp = await fetch(`${API}/trello`);
   const json = await resp.json();
 
-
   // const jsonString = JSON.stringify(json);
   // console.log(`jsonString: ${jsonString}`)
 
   const select = document.querySelector("select");
 
-
   for (let k of json) {
-    const option = document.createElement('option')
+    const option = document.createElement("option");
     option.id = k.id;
     option.value = k.name;
     option.innerHTML = k.name;
     select.appendChild(option);
- 
   }
-
 };
 
 getAllUser();
 
-const addUser = async (tasksArray) => {
+const addUser = async tasksArray => {
   const resp = await fetch(`${API}/users`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "application/json"
     },
-    userInput: JSON.stringify(tasksArray),
+    userInput: JSON.stringify(tasksArray)
   });
 
   return await resp.json();
 };
 addUser();
-
