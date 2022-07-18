@@ -18,8 +18,8 @@ let currentTaskNumber = currentTaskNumberJSON;
 const liElementsTodo = tasksArray.filter(element => {
  
   if(element.state === "todo"){
-    console.log(element)
-    console.log(createLiElement(element))
+    // console.log(element)
+    // console.log(createLiElement(element))
     return element
   }
    
@@ -31,8 +31,8 @@ const liElementsTodo = tasksArray.filter(element => {
 const liElementsProgress = tasksArray.filter(element => {
  
   if(element.state === "inprogress"){
-    console.log(element)
-    console.log(createLiElement(element))
+    // console.log(element)
+    // console.log(createLiElement(element))
     return element
   }
    
@@ -68,7 +68,7 @@ function createUlList(liElement) {
 
 
 
-// FUNCTION create LI elements
+// FUNCTION create LI elements for todo list
 function createLiElement({ id, title, description, user, time }) {
   const template = document.getElementById("template");
   const content = template.content.cloneNode(true);
@@ -87,10 +87,11 @@ function createLiElement({ id, title, description, user, time }) {
   addTime.innerText = time;
 
   li.id = id;
-  console.log(li)
+
   return li;
 }
 // END FUNCTION
+
 
 // FUNCTION create NEW LI elements WITH NEW ARRAY DATA
 function addNewList(data) {
@@ -119,6 +120,7 @@ function changeCurrentNumbersProgress(arr) {
   p.innerText = arr.length;
 }
 function createProgressList() {
+
   const arrayProgress = tasksArray.filter(elem => {
     return elem.state === "inprogress";
   });
@@ -126,7 +128,7 @@ function createProgressList() {
   const liElements = arrayProgress.map(element => {
     return createLiElement(element);
   });
-  console.log(arrayProgress)
+  // console.log(arrayProgress)
   
   createUlProgress(liElements);
   changeCurrentNumbersProgress(arrayProgress)
@@ -226,12 +228,13 @@ addBtn.addEventListener("click", () =>
       new Date().toLocaleString("ru", options),
       "todo"
     );
-    // поместить элементы в массив с индексом элементов
-    // mapElement();
-    //
+   
+
     localStorage.setItem("notes", JSON.stringify(tasksArray));
     localStorage.setItem("currentTaskNumber", tasksArray.length);
 
+     // добавить новые карты и поместить элементы в массив с индексом элементов
+   
     addNewList(mapElement());
     changeCurrentNumbersTODO();
 
@@ -254,7 +257,8 @@ function mapElement() {
      
     
   })
-  console.log(tasksArrayTodo)
+
+  // console.log(tasksArrayTodo)
 
   return tasksArrayTodo
 }
@@ -276,13 +280,13 @@ function addClickUl() {
   const indexArray = tasksArray.findIndex(({ id }) => id === currentId);
 
   if (target.className === "btn_delete") {
-    // const indexArray = tasksArray.findIndex(({ id }) => id === currentId);
+
     tasksArray.splice(indexArray, 1);
     addNewList(tasksArray);
     changeCurrentNumbersTODO();
   }
   if (target.className === "btn_edit") {
-    // const indexArray = tasksArray.findIndex(({ id }) => id === currentId);
+
     modalWindow.show(({ title, description, user, time }) => {
       const result = {};
       if (description.length === 0 || title.length === 0 || user.length === 0) {
@@ -306,13 +310,15 @@ function addClickUl() {
   }
   if (target.className === "form_btn") {
     tasksArray[indexArray].state = "inprogress";
-    console.log(tasksArray[indexArray].state);
+
+    // console.log(tasksArray[indexArray].state);
 
     /////1ST FILTER BY 'TODO' STATE
     const arrayTodo = tasksArray.filter(elem => {
       return elem.state === "todo";
     });
-    console.log(arrayTodo);
+
+    // console.log(arrayTodo);
 
 
     createProgressList()
@@ -328,6 +334,7 @@ function addClickUl() {
 list.addEventListener("click", addClickUl);
 
 // Electro clock(shows the current time)
+
 function update() {
   let watch = document.querySelector(".time-board p");
   let date = new Date();
@@ -352,24 +359,43 @@ function clockStart() {
 clockStart();
 
 // создание users
-// const API = "https://62d2ff0881cb1ecafa6906af.mockapi.io/api/v1/";
-// const getAllUser = async () => {
-//   const resp = await fetch(`${API}/users`);
-//   const json = await resp.json();
-// document.body.append(JSON.stringify(json));
-// };
 
-// const addUser = async (tasksArray) => {
+const API = "https://62d52802d4406e523554192d.mockapi.io";
 
-//   const resp = await fetch(`${API}/users`, {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type' : 'application/json'
-//     },
-//     userInput: JSON.stringify(tasksArray)
-//   });
+const getAllUser = async () => {
+  const resp = await fetch(`${API}/trello`);
+  const json = await resp.json();
 
-//   return await resp.json();
-// };
 
-// getAllUser();
+  // const jsonString = JSON.stringify(json);
+  // console.log(`jsonString: ${jsonString}`)
+
+  const select = document.querySelector("select");
+
+
+  for (let k of json) {
+    const option = document.createElement('option')
+    option.id = k.id;
+    option.value = k.name;
+    option.innerHTML = k.name;
+    select.appendChild(option);
+ 
+  }
+
+};
+
+getAllUser();
+
+const addUser = async (tasksArray) => {
+  const resp = await fetch(`${API}/users`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    userInput: JSON.stringify(tasksArray),
+  });
+
+  return await resp.json();
+};
+addUser();
+
