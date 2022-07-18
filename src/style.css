@@ -117,12 +117,15 @@
   justify-content: flex-end;
 }
 
-.btn_edit {
+.btn_edit,
+.btn_back {
   margin-right: 5px;
 }
 
 .btn_delete,
-.btn_edit {
+.btn_edit,
+.btn_back,
+.complete_btn  {
   width: 52px;
   height: 20px;
   text-transform: uppercase;
@@ -131,7 +134,9 @@
   border-radius: 5px;
   cursor: pointer;
 }
-
+.complete_btn {
+  width: 65px;
+}
 .title {
   font-size: 15px;
   text-align: left;
